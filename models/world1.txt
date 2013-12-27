@@ -1,0 +1,72 @@
+#
+100
+Before the Altar
+You're standing before an altar to an unknown god.
+-1|110|-1|102|-1|-1
+#
+102
+A small room
+This is a small, unremarkable room.
+-1|-1|100|-1|-1|-1
+#
+110
+On a cobble path
+This is a cobble path leading north of the main street.  Up ahead you see a magnificent temple.
+100|120|-1|-1|-1|-1
+#
+120
+Market square
+This is the center of town.  All around you people move from shop to shop spending money.  The market street continues east and west.  To the north is a large building.
+110|-1|119|121|-1|-1
+#
+119
+Market street east
+This is main street east of the market square.  Shops are to the north and south.
+133|132|118|120|-1|-1
+#
+118
+Eastern end of market street
+The main street ends here.  Shops, and streets extend in every direction except to the east, where you see the city gates.
+-1|-1|117|119|-1|-1
+#
+117
+The eastern city gates
+High gates block the way in (and out) of the city.
+-1|-1|-1|118|-1|-1
+#
+121
+Market street west
+The main street continues east and west through the center of town.  To the north is a rough looking bar.
+130|131|120|122|-1|-1
+#
+122
+Western end of market street
+This is the western end of the main street.  The gates of the city are to the west, and a alley continues south along the city walls.
+-1|-1|121|123|-1|-1
+#
+123
+The western city gates
+High gates block the way in (and out) of the city.
+-1|-1|122|-1|-1|-1
+#
+130
+The Boars Tusk
+This isn't a place for kids.  A bartender stands behind what appears to have once been part of a ship but now serves as a rudimentary bar.
+-1|121|-1|-1|-1|-1
+#
+131
+Fizznick's Wand
+An odd looking old man stands behind a faintly glowing counter, more or less ignoring you.
+121|-1|-1|-1|-1|-1
+#
+132
+Sticks and Stones
+A huge cudgel hangs above the stocky, bald man that stands behind the counter.
+119|-1|-1|-1|-1|-1
+#
+133
+The Bakery
+Freshly baked bread lines the racks behind the counter where an elderly woman kneads a hugh pile of dough.
+-1|119|-1|-1|-1|-1
+#
+999
