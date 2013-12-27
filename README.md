@@ -1,4 +1,0 @@
-far
-===
-
-Simple MUD engine
