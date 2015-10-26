@@ -64,8 +64,16 @@ class Game(object):
         player.exit = True
         
     def startfight(self, player, args):
-        player.addmessage("You attack!")
-        player.fighting = True
+        if len(args) == 1:
+            player.target = self.findnpc(args[0])
+            if player.target is self.npcs[0]:
+                player.target = None
+                player.addmessage("I dont see them.")
+            else:
+                player.addmessage("You attack %s!" % player.target.name)
+                player.fighting = True
+        else:
+            player.addmessage("Who do you want to fight?")
                 
     def stopfight(self, player, args):
         player.addmessage("You run like a little girl.")

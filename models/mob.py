@@ -1,4 +1,4 @@
-from random import random, randrange
+from random import random, randint, randrange
 
 class MobFlags:
     UNDEFINED  = 0
@@ -28,9 +28,10 @@ class Attack(object):
         
     def roll(self):
         total = 0
-        for i in range(1, dice):
-            if self.sides > 1:
-                total += randrange(1, self.sides, 1)
+        print "Rolling %d die with %d sides" % (self.dice, self.sides)
+        for i in range(1, self.dice+1):
+            if self.sides > 1:		
+                total += randint(1, self.sides)
             else:
                 total += 1
             
@@ -47,12 +48,17 @@ class NPC(object):
         self.attacks = attacks
         self.mobile = mobile
         self.room = None
+        self.target = None
 
     def goto(self, room):
         if self.room != None:
             self.room.npc_left(self)
         self.room = room
         self.room.npc_entered(self)
+
+    def combat(self):
+        for a in self.attacks:
+            a.roll()
 
     def walk(self):
         if random() > 0.8:
@@ -72,12 +78,19 @@ class Player(object):
         self.identified = False
         self.name = "DummyPlayer"
         self.room = None
+        self.target = None
+        self.attacks = [Attack(1, 5, 100)]
 
     def addmessage(self, m):
         self.messages.append("%s\r\n" % m)
         
     def combat(self):
-        self.addmessage('Pow!')
+	for a in self.attacks:
+             damage = a.roll()
+        if damage == 0:
+            self.messages.append("You miss %s with your hit." % self.target.name)
+        else:
+            self.messages.append("You hit %s for %d points." % (self.target.name, damage))
         
     def look(self):
         self.addmessage("[ROOMINFO]|%d|%s|%s" % (self.room.number, self.room.short_description, self.room.long_description))
