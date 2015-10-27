@@ -17,7 +17,8 @@ class Game(object):
                             Tag("[FIGHT]", self.startfight), Tag("[FLEE]", self.stopfight),
                             Tag("[IDENTIFY]", self.identify), Tag("[LOOK]", self.look),
                             Tag("[EXITS]", self.exits), Tag("[MOVETO]", self.moveto),
-                            Tag("[GO]",self.go)]
+                            Tag("[GO]",self.go), Tag("[NPCS]", self.listnpcs),
+                            Tag("[MOBS]", self.listmobs), Tag("[STATS]", self.stats)]
         self.exit = False
     
     def tick(self):
@@ -28,12 +29,15 @@ class Game(object):
                 if mob.mobile:
                     mob.walk()
         print "Tick"
-	#print hpy().heap()
+    #print hpy().heap()
     
     def combat(self):
         for player in self.players:
             if player.fighting:
                 player.combat()
+        for mob in self.mobs:
+            if mob.fighting:
+                mob.combat()
     
     def connection(self, connect):
         p = Player(connect);
@@ -62,22 +66,26 @@ class Game(object):
     def quit(self, player, args):
         player.addmessage('Bye!');
         player.exit = True
-        
+    
     def startfight(self, player, args):
         if len(args) == 1:
-            player.target = self.findnpc(args[0])
-            if player.target is self.npcs[0]:
-                player.target = None
+            player.target = self.findmob(args[0], player.room)
+            if player.target is None:
                 player.addmessage("I dont see them.")
             else:
                 player.addmessage("You attack %s!" % player.target.name)
                 player.fighting = True
+                player.target.target = player
+                player.target.fighting = True
         else:
             player.addmessage("Who do you want to fight?")
                 
     def stopfight(self, player, args):
-        player.addmessage("You run like a little girl.")
+        player.addmessage("You run away screaming.")
         player.fighting = False
+        player.target.fighting = False
+        player.target.target = None
+        player.target = None
                     
     def identify(self, player, args):
         if len(args) == 1:
@@ -91,7 +99,11 @@ class Game(object):
             #player.addmessage("[%d] %s\r\n%s" % (player.room.number,
             #                    player.room.short_description, 
             #                    player.room.long_description))
-                    
+
+    def stats(self, player, args):
+        if len(args) == 0:
+            player.stats()
+
     def moveto(self, player, args):
         if len(args) == 1:
             newroom = self.findroom(args[0])
@@ -109,6 +121,15 @@ class Game(object):
             if dest == None:
                 player.addmessage("[BADEXIT]")
             
+    def listnpcs(self, player, args):
+        for n in self.npcs:
+            if n is not None:
+                player.addmessage("[%s] %s" % (n.number, n.name))
+
+    def listmobs(self, player, args):
+        for m in self.mobs:
+            player.addmessage("[%s] %s : [%s] %s" % (m.number, m.name, m.room.number, m.room.short_description))
+
     def exits(self, player, args):
         if len(args) == 0:
             for e in player.room.exits:
@@ -125,7 +146,13 @@ class Game(object):
             if n.number == int(npcnum):
                 return n
         return self.npcs[0]
-                    
+
+    def findmob(self, npcnum, room):
+        for m in room.mobs:
+            if m.number == int(npcnum):
+                return m
+        return None
+
     def parser(self, player, line):
         parts = line.split('|')
         success = False
@@ -179,6 +206,7 @@ class Game(object):
                 if iterator == 13:
                     print "Adding NPC: [%d] %s" % (number, name)
                     self.npcs.append(NPC(number, name, desc, level, hp, attacks, mobile))
+                    attacks = []
                     iterator = 1
                 if iterator == 1:
                     number = int(line)

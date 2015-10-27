@@ -46,6 +46,7 @@ class NPC(object):
         self.maxhp = hp
         self.hp = hp
         self.attacks = attacks
+        self.fighting = False
         self.mobile = mobile
         self.room = None
         self.target = None
@@ -57,8 +58,13 @@ class NPC(object):
         self.room.npc_entered(self)
 
     def combat(self):
+        if self.target is None:
+            self.fighting = False
+            return
+
         for a in self.attacks:
-            a.roll()
+            damage = a.roll()
+            self.target.addmessage("%s hits you for %d damage." % (self.name, damage))
 
     def walk(self):
         if random() > 0.8:
@@ -77,6 +83,7 @@ class Player(object):
         self.fighting = False
         self.identified = False
         self.name = "DummyPlayer"
+        self.hp = 100
         self.room = None
         self.target = None
         self.attacks = [Attack(1, 5, 100)]
@@ -85,13 +92,24 @@ class Player(object):
         self.messages.append("%s\r\n" % m)
         
     def combat(self):
-	for a in self.attacks:
+        if self.target is None:
+            self.addmessage("You arent fighting anyone!")
+            self.fighting = False
+
+        for a in self.attacks:
              damage = a.roll()
         if damage == 0:
-            self.messages.append("You miss %s with your hit." % self.target.name)
+            self.addmessage("You miss %s with your hit." % self.target.name)
         else:
-            self.messages.append("You hit %s for %d points." % (self.target.name, damage))
-        
+            self.addmessage("You hit %s for %d points." % (self.target.name, damage))
+
+    def stats(self):
+        fight = "No One"
+        if self.fighting:
+            fight = self.target.name
+
+        self.addmessage("You are %s, you have %d hit points, and are currently fighting %s." % (self.name, self.hp, fight))
+
     def look(self):
         self.addmessage("[ROOMINFO]|%d|%s|%s" % (self.room.number, self.room.short_description, self.room.long_description))
         for e in self.room.exits:
